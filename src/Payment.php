@@ -38,7 +38,7 @@ class Payment
      */
     public function getPrincipal(): Price
     {
-        return $this->principal;
+        return $this->principal ?? Price::PHP(0);
     }
 
     /**

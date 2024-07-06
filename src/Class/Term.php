@@ -26,6 +26,9 @@ class Term
         $this->cycle = $cycle;
     }
 
+    /**
+     * @return int
+     */
     public function monthsToPay(): int
     {
         return $this->cycle->monthsToPay($this->value);

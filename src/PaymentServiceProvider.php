@@ -2,9 +2,8 @@
 
 namespace Homeful\Payment;
 
-use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Homeful\Payment\Commands\PaymentCommand;
+use Spatie\LaravelPackageTools\Package;
 
 class PaymentServiceProvider extends PackageServiceProvider
 {
@@ -17,9 +16,6 @@ class PaymentServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('payment')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_payment_table')
-            ->hasCommand(PaymentCommand::class);
+            ->hasConfigFile(['payment']);
     }
 }
