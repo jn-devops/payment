@@ -1,20 +1,20 @@
 <?php
 
-use Homeful\Payment\Exceptions\MaxCycleBreached;
-use Illuminate\Validation\ValidationException;
+use Homeful\Payment\Class\Term;
 use Homeful\Payment\Data\PaymentData;
 use Homeful\Payment\Enums\Cycle;
-use Homeful\Payment\Class\Term;
+use Homeful\Payment\Exceptions\MaxCycleBreached;
 use Homeful\Payment\Payment;
+use Illuminate\Validation\ValidationException;
 
 dataset('simulation', function () {
     return [
-        fn () => ['principal' => 850000, 'term' => 30, 'interest_rate' => 6.25/100, 'guess_monthly_amortization' => 5234.0],
-        fn () => ['principal' => 850000, 'term' => 20, 'interest_rate' => 6.25/100, 'guess_monthly_amortization' => 6213.0],
-        fn () => ['principal' => 850000, 'term' => 15, 'interest_rate' => 6.25/100, 'guess_monthly_amortization' => 7288.0],
-        fn () => ['principal' => 3420000, 'term' => 25, 'interest_rate' => 7/100, 'guess_monthly_amortization' => 24172.0],
-        fn () => ['principal' => 2900000, 'term' => 30, 'interest_rate' => 6.75/100, 'guess_monthly_amortization' => 18809.0],
-        fn () => ['principal' => 2450000, 'term' => 20, 'interest_rate' => 6.35/100, 'guess_monthly_amortization' => 18051.0],
+        fn () => ['principal' => 850000, 'term' => 30, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 5234.0],
+        fn () => ['principal' => 850000, 'term' => 20, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 6213.0],
+        fn () => ['principal' => 850000, 'term' => 15, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 7288.0],
+        fn () => ['principal' => 3420000, 'term' => 25, 'interest_rate' => 7 / 100, 'guess_monthly_amortization' => 24172.0],
+        fn () => ['principal' => 2900000, 'term' => 30, 'interest_rate' => 6.75 / 100, 'guess_monthly_amortization' => 18809.0],
+        fn () => ['principal' => 2450000, 'term' => 20, 'interest_rate' => 6.35 / 100, 'guess_monthly_amortization' => 18051.0],
     ];
 });
 
@@ -49,13 +49,13 @@ it('has max months to pay', function () {
 it('has interest rate property, default is zero', function () {
     $payment = new Payment;
     expect($payment->getInterestRate())->toBe(0.0);
-    $payment->setInterestRate(7/100);
+    $payment->setInterestRate(7 / 100);
     expect($payment->getInterestRate())->toBe(0.07);
 });
 
 it('has max interest rate ', function () {
     $payment = new Payment;
-    $payment->setInterestRate((100+1)/100);
+    $payment->setInterestRate((100 + 1) / 100);
 })->expectException(ValidationException::class);
 
 it('can calculate PMT - yearly', function (array $attribs) {
@@ -78,12 +78,12 @@ it('has data', function () {
     $payment = (new Payment)
         ->setPrincipal(850000.0)
         ->setTerm(new Term(20))
-        ->setInterestRate(6.25/100);
+        ->setInterestRate(6.25 / 100);
     $data = PaymentData::fromObject($payment);
     expect($data->principal)->toBe(850000.0);
     expect($data->term)->toBe(20);
     expect($data->cycle)->toBe('Yearly');
-    expect($data->interest_rate)->toBe(6.25/100);
+    expect($data->interest_rate)->toBe(6.25 / 100);
     expect($data->cycle)->toBe('Yearly');
     expect($data->monthly_amortization)->toBe(6213.0);
 });

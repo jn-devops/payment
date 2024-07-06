@@ -2,12 +2,12 @@
 
 namespace Homeful\Payment;
 
-use Illuminate\Support\Facades\Validator;
-use Homeful\Payment\Class\Term;
 use Brick\Math\RoundingMode;
+use Brick\Money\Money;
+use Homeful\Payment\Class\Term;
+use Illuminate\Support\Facades\Validator;
 use Jarouche\Financial\PMT;
 use Whitecube\Price\Price;
-use Brick\Money\Money;
 
 class Payment
 {
@@ -18,8 +18,8 @@ class Payment
     protected float $interest_rate;
 
     /**
-     * @param Price|float $principal
      * @return $this
+     *
      * @throws \Brick\Math\Exception\NumberFormatException
      * @throws \Brick\Math\Exception\RoundingNecessaryException
      * @throws \Brick\Money\Exception\UnknownCurrencyException
@@ -33,16 +33,12 @@ class Payment
         return $this;
     }
 
-    /**
-     * @return Price
-     */
     public function getPrincipal(): Price
     {
         return $this->principal ?? Price::PHP(0);
     }
 
     /**
-     * @param Term $term
      * @return $this
      */
     public function setTerm(Term $term): self
@@ -52,46 +48,35 @@ class Payment
         return $this;
     }
 
-    /**
-     * @return Term
-     */
     public function getTerm(): Term
     {
         return $this->term;
     }
 
     /**
-     * @param float $interest_rate
      * @return $this
      */
     public function setInterestRate(float $interest_rate): self
     {
         Validator::validate(compact('interest_rate'), ['interest_rate' => [
-            'required', 'numeric',  'min:0', 'max:1'
+            'required', 'numeric',  'min:0', 'max:1',
         ]]);
         $this->interest_rate = $interest_rate;
 
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getInterestRate(): float
     {
         return $this->interest_rate ?? 0;
     }
 
-    /**
-     * @return float
-     */
     protected function getMonthlyInterestRate(): float
     {
         return $this->getInterestRate() / 12;
     }
 
     /**
-     * @return Price
      * @throws \Brick\Math\Exception\NumberFormatException
      * @throws \Brick\Math\Exception\RoundingNecessaryException
      * @throws \Brick\Money\Exception\UnknownCurrencyException

@@ -9,7 +9,6 @@ enum Cycle
 
     /**
      * @TODO:
-     * @return int
      */
     public function ceiling(): int
     {
@@ -19,10 +18,6 @@ enum Cycle
         };
     }
 
-    /**
-     * @param int $value
-     * @return int
-     */
     public function monthsToPay(int $value): int
     {
         return match ($this) {
