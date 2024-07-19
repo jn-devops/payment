@@ -7,14 +7,21 @@ use Homeful\Payment\Exceptions\MaxCycleBreached;
 use Homeful\Payment\Payment;
 use Illuminate\Validation\ValidationException;
 
-dataset('simulation', function () {
+dataset('PMT simulation', function () {
     return [
-        fn () => ['principal' => 850000, 'term' => 30, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 5234.0],
-        fn () => ['principal' => 850000, 'term' => 20, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 6213.0],
-        fn () => ['principal' => 850000, 'term' => 15, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 7288.0],
-        fn () => ['principal' => 3420000, 'term' => 25, 'interest_rate' => 7 / 100, 'guess_monthly_amortization' => 24172.0],
-        fn () => ['principal' => 2900000, 'term' => 30, 'interest_rate' => 6.75 / 100, 'guess_monthly_amortization' => 18809.0],
-        fn () => ['principal' => 2450000, 'term' => 20, 'interest_rate' => 6.35 / 100, 'guess_monthly_amortization' => 18051.0],
+        fn () => ['principal' => 850000,  'term' => 30, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 5234.0],
+        fn () => ['principal' => 850000,  'term' => 20, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 6213.0],
+        fn () => ['principal' => 850000,  'term' => 15, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 7288.0],
+        fn () => ['principal' => 3420000, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 24172.0],
+        fn () => ['principal' => 2900000, 'term' => 30, 'interest_rate' => 6.75 / 100,  'guess_monthly_amortization' => 18809.0],
+        fn () => ['principal' => 2450000, 'term' => 20, 'interest_rate' => 6.35 / 100,  'guess_monthly_amortization' => 18051.0],
+
+        fn () => ['principal' => (2500000*(1+0.085)) * 0.95, 'term' => 20, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 19978.0],
+        fn () => ['principal' => (2500000*(1+0.085)) * 0.95, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 18213.0],
+        fn () => ['principal' => (2500000*(1+0.085)) * 0.95, 'term' => 30, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 17144.0],
+        fn () => ['principal' => (4500000*(1+0.085)) * 0.95, 'term' => 20, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 35961.0],
+        fn () => ['principal' => (4500000*(1+0.085)) * 0.95, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 32783.0],
+        fn () => ['principal' => (4500000*(1+0.085)) * 0.95, 'term' => 30, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 30859.0],
     ];
 });
 
@@ -64,7 +71,7 @@ it('can calculate PMT - yearly', function (array $attribs) {
         ->setTerm(new Term($attribs['term']))
         ->setInterestRate($attribs['interest_rate']);
     expect($payment->getMonthlyAmortization()->inclusive()->compareTo($attribs['guess_monthly_amortization']))->toBe(0);
-})->with('simulation');
+})->with('PMT simulation');
 
 it('can calculate PMT - monthly', function () {
     $payment = (new Payment)
