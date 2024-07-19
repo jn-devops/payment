@@ -33,8 +33,15 @@ class Term
         return $this->cycle->monthsToPay($this->value);
     }
 
-    public function yearsToPay(int $precision = 1): float
+    public function yearsToPay(int $precision = 1): mixed
     {
-        return $this->cycle->yearsToPay($this->value, $precision);
+        $value = $this->cycle->yearsToPay($this->value, $precision);
+
+        return $this->isWhole($value) ? (int) $value : $value;
+    }
+
+    protected function isWhole(mixed $value): bool
+    {
+        return fmod($value, 1) === 0.0;
     }
 }
