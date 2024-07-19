@@ -2,6 +2,10 @@
 
 All notable changes to `payment` will be documented in this file.
 
+## #v1.1.2 - 2024-07-19
+
+add isWhole in Term
+
 ## #v1.1.1 - 2024-07-19
 
 add yearsToPay in Cycle class
