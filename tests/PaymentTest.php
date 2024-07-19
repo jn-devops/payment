@@ -37,10 +37,14 @@ it('has a term property', function () {
     $payment->setTerm(new Term(20));
     expect($payment->getTerm()->value)->toBe(20);
     expect($payment->getTerm()->cycle)->toBe(Cycle::Yearly);
+    expect($payment->getTerm()->yearsToPay())->toBe(20.0);
+    expect($payment->getTerm()->monthsToPay())->toBe(20 * 12);
 
     $payment->setTerm(new Term(12, Cycle::Monthly));
     expect($payment->getTerm()->value)->toBe(12);
     expect($payment->getTerm()->cycle)->toBe(Cycle::Monthly);
+    expect($payment->getTerm()->monthsToPay())->toBe(12);
+    expect($payment->getTerm()->yearsToPay())->toBe(1.0);
 });
 
 it('has max years to pay', function () {

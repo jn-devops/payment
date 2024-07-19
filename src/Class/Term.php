@@ -32,4 +32,9 @@ class Term
     {
         return $this->cycle->monthsToPay($this->value);
     }
+
+    public function yearsToPay(int $precision = 1): float
+    {
+        return $this->cycle->yearsToPay($this->value, $precision);
+    }
 }

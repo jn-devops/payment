@@ -25,4 +25,12 @@ enum Cycle
             Cycle::Yearly => $value * 12,
         };
     }
+
+    public function yearsToPay(int $value, int $precision = 1): float
+    {
+        return match ($this) {
+            Cycle::Monthly => round($value / 12, $precision),
+            Cycle::Yearly => $value,
+        };
+    }
 }
