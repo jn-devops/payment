@@ -16,12 +16,12 @@ dataset('PMT simulation', function () {
         fn () => ['principal' => 2900000, 'term' => 30, 'interest_rate' => 6.75 / 100,  'guess_monthly_amortization' => 18809.0],
         fn () => ['principal' => 2450000, 'term' => 20, 'interest_rate' => 6.35 / 100,  'guess_monthly_amortization' => 18051.0],
 
-        fn () => ['principal' => (2500000*(1+0.085)) * 0.95, 'term' => 20, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 19978.0],
-        fn () => ['principal' => (2500000*(1+0.085)) * 0.95, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 18213.0],
-        fn () => ['principal' => (2500000*(1+0.085)) * 0.95, 'term' => 30, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 17144.0],
-        fn () => ['principal' => (4500000*(1+0.085)) * 0.95, 'term' => 20, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 35961.0],
-        fn () => ['principal' => (4500000*(1+0.085)) * 0.95, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 32783.0],
-        fn () => ['principal' => (4500000*(1+0.085)) * 0.95, 'term' => 30, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 30859.0],
+        fn () => ['principal' => (2500000 * (1 + 0.085)) * 0.95, 'term' => 20, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 19978.0],
+        fn () => ['principal' => (2500000 * (1 + 0.085)) * 0.95, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 18213.0],
+        fn () => ['principal' => (2500000 * (1 + 0.085)) * 0.95, 'term' => 30, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 17144.0],
+        fn () => ['principal' => (4500000 * (1 + 0.085)) * 0.95, 'term' => 20, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 35961.0],
+        fn () => ['principal' => (4500000 * (1 + 0.085)) * 0.95, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 32783.0],
+        fn () => ['principal' => (4500000 * (1 + 0.085)) * 0.95, 'term' => 30, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 30859.0],
     ];
 });
 

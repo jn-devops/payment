@@ -11,17 +11,14 @@ class PresentValue extends Formula
 {
     protected Price $payment;
 
-    /**
-     * @return Price
-     */
     public function getPayment(): Price
     {
         return $this->payment ?? Price::PHP(0);
     }
 
     /**
-     * @param Price|float $payment
      * @return $this
+     *
      * @throws \Brick\Math\Exception\NumberFormatException
      * @throws \Brick\Math\Exception\RoundingNecessaryException
      * @throws \Brick\Money\Exception\UnknownCurrencyException
@@ -36,7 +33,6 @@ class PresentValue extends Formula
     }
 
     /**
-     * @return Price
      * @throws \Brick\Math\Exception\NumberFormatException
      * @throws \Brick\Math\Exception\RoundingNecessaryException
      * @throws \Brick\Money\Exception\UnknownCurrencyException
@@ -45,6 +41,7 @@ class PresentValue extends Formula
     {
         $payment = $this->getPayment()->inclusive()->getAmount()->toFloat();
         $months_to_pay = $this->getTerm()->monthsToPay();
+
         return with(new PV(InterestRate: $this->getMonthlyInterestRate(), periods: $months_to_pay, pmt: $payment), function ($obj) {
             $float = round($obj->evaluate());
 

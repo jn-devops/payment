@@ -1,12 +1,8 @@
 <?php
 
 use Homeful\Payment\Class\Term;
-use Homeful\Payment\Data\PaymentData;
 use Homeful\Payment\Enums\Cycle;
-use Homeful\Payment\Exceptions\MaxCycleBreached;
 use Homeful\Payment\PresentValue;
-use Illuminate\Validation\ValidationException;
-use Jarouche\Financial\PV;
 
 it('has a payment property defaults to zero', function () {
     $present_value = new PresentValue;
@@ -30,7 +26,7 @@ it('can calculate PMT - monthly', function () {
     $present_value = (new PresentValue)
         ->setPayment(50000 * 0.3)
         ->setTerm(new Term(20, Cycle::Yearly))
-        ->setInterestRate(7/100);
+        ->setInterestRate(7 / 100);
     expect($present_value->getMonthlyDiscountedValue()->inclusive()->compareTo(1934738))->toBe(0);
 });
 
