@@ -4,10 +4,9 @@ namespace Homeful\Payment;
 
 use Brick\Math\RoundingMode;
 use Brick\Money\Money;
+use Homeful\Payment\Traits\HasIncomeRequirement;
 use Jarouche\Financial\PMT;
 use Whitecube\Price\Price;
-use Illuminate\Support\Facades\Validator;
-use Homeful\Payment\Traits\HasIncomeRequirement;
 
 class Payment extends Formula
 {

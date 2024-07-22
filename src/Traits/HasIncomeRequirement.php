@@ -8,7 +8,6 @@ use Brick\Money\Money;
 trait HasIncomeRequirement
 {
     /**
-     * @param float $percent_disposable_income_requirement
      * @return \Homeful\Payment\Payment|HasIncomeRequirement
      */
     public function setPercentDisposableIncomeRequirement(float $percent_disposable_income_requirement): self
@@ -21,8 +20,6 @@ trait HasIncomeRequirement
     /**
      * default is 30%
      * configurable in payment.php
-     *
-     * @return float
      */
     public function getPercentDisposableIncomeRequirement(): float
     {
@@ -30,7 +27,6 @@ trait HasIncomeRequirement
     }
 
     /**
-     * @return Money
      * @throws \Brick\Math\Exception\NumberFormatException
      * @throws \Brick\Math\Exception\RoundingNecessaryException
      * @throws \Brick\Money\Exception\UnknownCurrencyException
