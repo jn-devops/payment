@@ -2,6 +2,10 @@
 
 All notable changes to `payment` will be documented in this file.
 
+## #v1.2.0 - 2024-07-22
+
+add income requirement
+
 ## #v1.1.2 - 2024-07-19
 
 add isWhole in Term
