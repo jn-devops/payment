@@ -6,10 +6,16 @@ use Brick\Math\RoundingMode;
 use Brick\Money\Money;
 use Jarouche\Financial\PMT;
 use Whitecube\Price\Price;
+use Illuminate\Support\Facades\Validator;
+use Homeful\Payment\Traits\HasIncomeRequirement;
 
 class Payment extends Formula
 {
+    use HasIncomeRequirement;
+
     protected Price $principal;
+
+    protected float $percent_disposable_income_requirement;
 
     /**
      * @return $this

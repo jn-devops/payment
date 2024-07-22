@@ -9,19 +9,19 @@ use Illuminate\Validation\ValidationException;
 
 dataset('PMT simulation', function () {
     return [
-        fn () => ['principal' => 850000,  'term' => 30, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 5234.0],
-        fn () => ['principal' => 850000,  'term' => 20, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 6213.0],
-        fn () => ['principal' => 850000,  'term' => 15, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 7288.0],
-        fn () => ['principal' => 3420000, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 24172.0],
-        fn () => ['principal' => 2900000, 'term' => 30, 'interest_rate' => 6.75 / 100,  'guess_monthly_amortization' => 18809.0],
-        fn () => ['principal' => 2450000, 'term' => 20, 'interest_rate' => 6.35 / 100,  'guess_monthly_amortization' => 18051.0],
+        fn () => ['principal' => 850000,  'term' => 30, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 5234.0, 'guess_income_requirement' => 17446.67],
+        fn () => ['principal' => 850000,  'term' => 20, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 6213.0, 'guess_income_requirement' => 20710.0],
+        fn () => ['principal' => 850000,  'term' => 15, 'interest_rate' => 6.25 / 100, 'guess_monthly_amortization' => 7288.0, 'guess_income_requirement' => 24293.34],
+        fn () => ['principal' => 3420000, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 24172.0, 'guess_income_requirement' => 80573.34],
+        fn () => ['principal' => 2900000, 'term' => 30, 'interest_rate' => 6.75 / 100,  'guess_monthly_amortization' => 18809.0, 'guess_income_requirement' => 62696.67],
+        fn () => ['principal' => 2450000, 'term' => 20, 'interest_rate' => 6.35 / 100,  'guess_monthly_amortization' => 18051.0, 'guess_income_requirement' => 60170.0],
 
-        fn () => ['principal' => (2500000 * (1 + 0.085)) * 0.95, 'term' => 20, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 19978.0],
-        fn () => ['principal' => (2500000 * (1 + 0.085)) * 0.95, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 18213.0],
-        fn () => ['principal' => (2500000 * (1 + 0.085)) * 0.95, 'term' => 30, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 17144.0],
-        fn () => ['principal' => (4500000 * (1 + 0.085)) * 0.95, 'term' => 20, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 35961.0],
-        fn () => ['principal' => (4500000 * (1 + 0.085)) * 0.95, 'term' => 25, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 32783.0],
-        fn () => ['principal' => (4500000 * (1 + 0.085)) * 0.95, 'term' => 30, 'interest_rate' => 7 / 100,     'guess_monthly_amortization' => 30859.0],
+        fn () => ['principal' => (2500000 * (1 + 0.085)) * 0.95, 'term' => 20, 'interest_rate' => 7 / 100, 'guess_monthly_amortization' => 19978.0, 'guess_income_requirement' => 66593.34],
+        fn () => ['principal' => (2500000 * (1 + 0.085)) * 0.95, 'term' => 25, 'interest_rate' => 7 / 100, 'guess_monthly_amortization' => 18213.0, 'guess_income_requirement' => 60710.00],
+        fn () => ['principal' => (2500000 * (1 + 0.085)) * 0.95, 'term' => 30, 'interest_rate' => 7 / 100, 'guess_monthly_amortization' => 17144.0, 'guess_income_requirement' => 57146.67],
+        fn () => ['principal' => (4500000 * (1 + 0.085)) * 0.95, 'term' => 20, 'interest_rate' => 7 / 100, 'guess_monthly_amortization' => 35961.0, 'guess_income_requirement' => 119870.0],
+        fn () => ['principal' => (4500000 * (1 + 0.085)) * 0.95, 'term' => 25, 'interest_rate' => 7 / 100, 'guess_monthly_amortization' => 32783.0, 'guess_income_requirement' => 109276.67],
+        fn () => ['principal' => (4500000 * (1 + 0.085)) * 0.95, 'term' => 30, 'interest_rate' => 7 / 100, 'guess_monthly_amortization' => 30859.0, 'guess_income_requirement' => 102863.34],
     ];
 });
 
@@ -69,12 +69,18 @@ it('has max interest rate ', function () {
     $payment->setInterestRate((100 + 1) / 100);
 })->expectException(ValidationException::class);
 
-it('can calculate PMT - yearly', function (array $attribs) {
+it('has default percent disposable income', function () {
+    $payment = new Payment;
+    expect($payment->getPercentDisposableIncomeRequirement())->toBe(config('payment.default_percent_disposable_income'));
+});
+
+it('can calculate PMT and income requirement - yearly', function (array $attribs) {
     $payment = (new Payment)
         ->setPrincipal($attribs['principal'])
         ->setTerm(new Term($attribs['term']))
         ->setInterestRate($attribs['interest_rate']);
     expect($payment->getMonthlyAmortization()->inclusive()->compareTo($attribs['guess_monthly_amortization']))->toBe(0);
+    expect($payment->getIncomeRequirement()->compareTo($attribs['guess_income_requirement']))->toBe(0);
 })->with('PMT simulation');
 
 it('can calculate PMT - monthly', function () {
@@ -97,4 +103,5 @@ it('has data', function () {
     expect($data->interest_rate)->toBe(6.25 / 100);
     expect($data->cycle)->toBe('Yearly');
     expect($data->monthly_amortization)->toBe(6213.0);
+    expect($data->income_requirement)->toBe(20710.0);
 });
