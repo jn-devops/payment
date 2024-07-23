@@ -27,7 +27,7 @@ it('can calculate PMT - monthly', function () {
         ->setPayment(50000 * 0.3)
         ->setTerm(new Term(20, Cycle::Yearly))
         ->setInterestRate(7 / 100);
-    expect($present_value->getMonthlyDiscountedValue()->inclusive()->compareTo(1934738))->toBe(0);
+    expect($present_value->getDiscountedValue()->inclusive()->compareTo(1934738))->toBe(0);
 });
 
 dataset('PV simulation', function () {
@@ -42,5 +42,5 @@ it('can calculate PMT', function (array $attribs) {
         ->setPayment($attribs['payment'])
         ->setTerm(new Term($attribs['term'], Cycle::Yearly))
         ->setInterestRate($attribs['interest_rate']);
-    expect($present_value->getMonthlyDiscountedValue()->inclusive()->compareTo($attribs['guess_discounted_value']))->toBe(0);
+    expect($present_value->getDiscountedValue()->inclusive()->compareTo($attribs['guess_discounted_value']))->toBe(0);
 })->with('PV simulation');
