@@ -2,6 +2,10 @@
 
 All notable changes to `payment` will be documented in this file.
 
+## #v1.2.1 - 2024-07-23
+
+deprete getMonthlyDiscountedValue in favor of getDiscountedValue
+
 ## #v1.2.0 - 2024-07-22
 
 add income requirement
