@@ -2,6 +2,10 @@
 
 All notable changes to `payment` will be documented in this file.
 
+## #v1.2.2 - 2024-08-31
+
+fix styling
+
 ## #v1.2.1 - 2024-07-23
 
 deprete getMonthlyDiscountedValue in favor of getDiscountedValue
