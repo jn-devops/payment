@@ -2,8 +2,8 @@
 
 namespace Homeful\Payment;
 
-use Homeful\Payment\Class\Term;
 use Illuminate\Support\Facades\Validator;
+use Homeful\Payment\Class\Term;
 
 abstract class Formula
 {

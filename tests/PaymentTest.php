@@ -1,11 +1,11 @@
 <?php
 
-use Homeful\Payment\Class\Term;
+use Homeful\Payment\Exceptions\MaxCycleBreached;
+use Illuminate\Validation\ValidationException;
 use Homeful\Payment\Data\PaymentData;
 use Homeful\Payment\Enums\Cycle;
-use Homeful\Payment\Exceptions\MaxCycleBreached;
+use Homeful\Payment\Class\Term;
 use Homeful\Payment\Payment;
-use Illuminate\Validation\ValidationException;
 
 dataset('PMT simulation', function () {
     return [

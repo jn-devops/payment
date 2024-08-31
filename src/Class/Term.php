@@ -2,9 +2,9 @@
 
 namespace Homeful\Payment\Class;
 
-use Homeful\Payment\Enums\Cycle;
 use Homeful\Payment\Exceptions\MaxCycleBreached;
 use Homeful\Payment\Exceptions\MinTermBreached;
+use Homeful\Payment\Enums\Cycle;
 
 class Term
 {

@@ -2,11 +2,11 @@
 
 namespace Homeful\Payment;
 
-use Brick\Math\RoundingMode;
-use Brick\Money\Money;
 use Homeful\Payment\Traits\HasIncomeRequirement;
+use Brick\Math\RoundingMode;
 use Jarouche\Financial\PMT;
 use Whitecube\Price\Price;
+use Brick\Money\Money;
 
 class Payment extends Formula
 {

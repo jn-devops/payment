@@ -2,8 +2,8 @@
 
 namespace Homeful\Payment;
 
-use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Spatie\LaravelPackageTools\Package;
 
 class PaymentServiceProvider extends PackageServiceProvider
 {

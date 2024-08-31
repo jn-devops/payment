@@ -3,9 +3,9 @@
 namespace Homeful\Payment;
 
 use Brick\Math\RoundingMode;
-use Brick\Money\Money;
 use Jarouche\Financial\PV;
 use Whitecube\Price\Price;
+use Brick\Money\Money;
 
 class PresentValue extends Formula
 {

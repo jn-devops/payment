@@ -2,8 +2,8 @@
 
 namespace Homeful\Payment\Exceptions;
 
-use Exception;
 use Homeful\Payment\Enums\Cycle;
+use Exception;
 
 class MaxCycleBreached extends Exception
 {

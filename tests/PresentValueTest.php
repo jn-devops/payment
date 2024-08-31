@@ -1,8 +1,8 @@
 <?php
 
-use Homeful\Payment\Class\Term;
-use Homeful\Payment\Enums\Cycle;
 use Homeful\Payment\PresentValue;
+use Homeful\Payment\Enums\Cycle;
+use Homeful\Payment\Class\Term;
 
 it('has a payment property defaults to zero', function () {
     $present_value = new PresentValue;
