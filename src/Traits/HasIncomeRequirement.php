@@ -3,12 +3,16 @@
 namespace Homeful\Payment\Traits;
 
 use Brick\Math\RoundingMode;
+use Homeful\Payment\Payment;
 use Brick\Money\Money;
 
 trait HasIncomeRequirement
 {
+    protected float $percent_disposable_income_requirement;
+
     /**
-     * @return \Homeful\Payment\Payment|HasIncomeRequirement
+     * @param float $percent_disposable_income_requirement
+     * @return Payment|HasIncomeRequirement
      */
     public function setPercentDisposableIncomeRequirement(float $percent_disposable_income_requirement): self
     {

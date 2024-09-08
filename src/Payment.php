@@ -14,7 +14,7 @@ class Payment extends Formula
 
     protected Price $principal;
 
-    protected float $percent_disposable_income_requirement;
+
 
     /**
      * @return $this
@@ -41,6 +41,7 @@ class Payment extends Formula
      * @throws \Brick\Math\Exception\NumberFormatException
      * @throws \Brick\Math\Exception\RoundingNecessaryException
      * @throws \Brick\Money\Exception\UnknownCurrencyException
+     * @throws \Exception
      */
     public function getMonthlyAmortization(): Price
     {
