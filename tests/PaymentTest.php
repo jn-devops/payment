@@ -105,3 +105,95 @@ it('has data', function () {
     expect($data->monthly_amortization)->toBe(6213.0);
     expect($data->income_requirement)->toBe(20710.0);
 });
+
+
+use Homeful\Common\Classes\AddOnFeeToPayment as DeductibleFeeFromPayment;
+use Homeful\Common\Classes\AddOnFeeToPayment;
+
+// Test: Payment without any fees.
+test('monthly amortization without fees', function () {
+    $payment = (new Payment)
+        ->setPrincipal(120000) // 120,000 PHP principal
+        ->setTerm(new Term(24, Cycle::Monthly)) // 24 months term
+        ->setInterestRate(0); // Zero interest
+
+    $monthlyPayment = $payment->getMonthlyAmortization();
+    // Expected: 120,000 / 24 = 5,000 PHP
+    expect($monthlyPayment->inclusive()->getAmount()->toFloat())->toBe(5000.0);
+});
+
+// Test: Payment with add-on fees only.
+test('monthly amortization includes add-on fees', function () {
+    $payment = (new Payment)
+        ->setPrincipal(120000)
+        ->setTerm(new Term(24, Cycle::Monthly))
+        ->setInterestRate(0);
+
+    // Base monthly payment: 5,000 PHP.
+    $basePayment = $payment->getMonthlyAmortization();
+    $baseAmount = $basePayment->inclusive()->getAmount()->toFloat();
+    expect($baseAmount)->toBe(5000.0);
+
+    // Add add-on fees totaling 300 PHP.
+    $fee1 = new AddOnFeeToPayment('fire insurance', 100, false);
+    $fee2 = new AddOnFeeToPayment('mortgage redemption insurance', 200, false);
+    $payment->addAddOnFeeToPayment($fee1);
+    $payment->addAddOnFeeToPayment($fee2);
+
+    $finalPayment = $payment->getMonthlyAmortization();
+    $finalAmount = $finalPayment->inclusive()->getAmount()->toFloat();
+
+    // Final payment should equal base + 300 = 5,300 PHP.
+    expect($finalAmount)->toBe(5300.0);
+});
+
+// Test: Payment with deductible fees only.
+test('monthly amortization includes deductible fees', function () {
+    $payment = (new Payment)
+        ->setPrincipal(240000)
+        ->setTerm(new Term(24, Cycle::Monthly))
+        ->setInterestRate(0);
+
+    $basePayment = $payment->getMonthlyAmortization();
+    $baseAmount = $basePayment->inclusive()->getAmount()->toFloat();
+    expect($baseAmount)->toBe(10000.0);
+
+    // Add a deductible fee of 50 PHP.
+    $deductibleFee = new DeductibleFeeFromPayment('late fee', 125, deductible: true);
+    $payment->addDeductibleFee($deductibleFee);
+
+    $finalPayment = $payment->getMonthlyAmortization();
+    $finalAmount = $finalPayment->inclusive()->getAmount()->toFloat();
+
+    // Final payment should equal base - 50 = 4,950 PHP.
+    expect($finalAmount)->toBe(9875.0);
+});
+
+// Test: Payment with both add-on and deductible fees.
+test('monthly amortization includes both add-on and deductible fees', function () {
+    $payment = (new Payment)
+        ->setPrincipal(120000)
+        ->setTerm(new Term(24, Cycle::Monthly))
+        ->setInterestRate(0);
+
+    // Base monthly payment: 5,000 PHP.
+    $basePayment = $payment->getMonthlyAmortization();
+    $baseAmount = $basePayment->inclusive()->getAmount()->toFloat();
+    expect($baseAmount)->toBe(5000.0);
+
+    // Add add-on fees totaling 300 PHP.
+    $fee1 = new AddOnFeeToPayment('fire insurance', 100, false);
+    $fee2 = new AddOnFeeToPayment('mortgage redemption insurance', 200, false);
+    $payment->addAddOnFeeToPayment($fee1);
+    $payment->addAddOnFeeToPayment($fee2);
+
+    // Add a deductible fee of 50 PHP.
+    $deductibleFee = new DeductibleFeeFromPayment('late fee', 50, deductible: true);
+    $payment->addDeductibleFee($deductibleFee);
+
+    $finalPayment = $payment->getMonthlyAmortization();
+    $finalAmount = $finalPayment->inclusive()->getAmount()->toFloat();
+
+    // Expected final monthly payment = 5000 + 300 - 50 = 5250 PHP.
+    expect($finalAmount)->toBe(5250.0);
+});

@@ -2,7 +2,7 @@
 
 namespace Homeful\Payment;
 
-use Homeful\Payment\Traits\{HasAddOnFees, HasIncomeRequirement};
+use Homeful\Payment\Traits\{HasAddOnFees, HasDeductibleFees, HasIncomeRequirement};
 use Brick\Math\RoundingMode;
 use Jarouche\Financial\PMT;
 use Whitecube\Price\Price;
@@ -11,6 +11,7 @@ use Brick\Money\Money;
 class Payment extends Formula
 {
     use HasIncomeRequirement;
+    use HasDeductibleFees;
     use HasAddOnFees;
 
     protected Price $principal;
@@ -127,7 +128,16 @@ class Payment extends Formula
             $baseMonthlyPayment->addModifier('Total Add-On Fees', $totalAddOnFees->inclusive());
         }
 
-        // Step 4: Return the final monthly payment including add-on fees.
+        $totalDeductibleFees = $this->getTotalDeductibleFees();
+
+        // Step 4: If deductible fees exist, add them as a modifier.
+        if ($totalDeductibleFees->inclusive()->getAmount()->toFloat() > 0) {
+            $baseMonthlyPayment->addModifier('Total Deductible Fees', function ($modifier) use ($totalDeductibleFees) {
+                $modifier->subtract($totalDeductibleFees->inclusive());
+            });
+        }
+
+        // Step 5: Return the final monthly payment including add-on fees.
         return $baseMonthlyPayment;
     }
 }

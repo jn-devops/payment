@@ -148,17 +148,22 @@ test('monthly amortization includes add-on fees with 6.2% interest', function ()
     // Create a Payment instance with a principal amount of 120,000 PHP,
     // a term of 24 months (monthly cycle), and an interest rate of 6.2%
     $payment = (new Payment)
-        ->setPrincipal(120000)  // Principal: 120,000 PHP
-        ->setTerm(new Term(24, Cycle::Monthly))  // Term: 24 months
-        ->setInterestRate(6.2 / 100);  // Interest rate: 6.2%
+        ->setPrincipal(750000)  // Principal: 750,000 PHP
+        ->setTerm(new Term(29, Cycle::Yearly))  // Term: 29 years
+        ->setInterestRate(6.25 / 100);  // Interest rate: 6.25%
 
     // Retrieve the base monthly payment (without fees) using the PMT formula.
     $baseMonthly = $payment->getMonthlyAmortization();
     $baseAmount = $baseMonthly->inclusive()->getAmount()->toFloat();
+    expect($baseAmount)->toBe(4673.0);
 
     // Add two add-on fees: 100 PHP and 200 PHP (total add-on fees = 300 PHP)
-    $fee1 = new AddOnFeeToPayment('fire insurance', new Price(Money::of(100, 'PHP', roundingMode: RoundingMode::UP)), false);
-    $fee2 = new AddOnFeeToPayment('mortgage redemption insurance', 200, false);
+    $fire_insurance = round((750000 * 0.00212584)/12, 2);
+    expect($fire_insurance)->toBe(132.87);
+    $fee1 = new AddOnFeeToPayment('fire insurance', new Price(Money::of($fire_insurance, 'PHP', roundingMode: RoundingMode::UP)), false);
+    $mortgage_redemption_insurance = (750000 / 1000) * 0.225;
+    expect($mortgage_redemption_insurance)->toBe(168.75);
+    $fee2 = new AddOnFeeToPayment('mortgage redemption insurance', (750000 / 1000) * 0.225, false);
 
     $payment->addAddOnFeeToPayment($fee1);
     $payment->addAddOnFeeToPayment($fee2);
@@ -170,8 +175,52 @@ test('monthly amortization includes add-on fees with 6.2% interest', function ()
     // Retrieve total add-on fees as a Price object.
     $totalFees = $payment->getTotalAddOnFeesToPayment();
     $totalFeeAmount = $totalFees->inclusive()->getAmount()->toFloat();
-    expect($totalFeeAmount)->toBe(300.0);
+    expect($totalFeeAmount)->toBe( 301.62);
+    expect($totalFeeAmount)->toBe( $fire_insurance + $mortgage_redemption_insurance);
 
     // Assert that the final monthly payment equals the base payment plus total add-on fees.
     expect($finalAmount)->toBe($baseAmount + $totalFeeAmount);
+    expect($finalAmount)->toBe(4974.62);
+});
+
+use Homeful\Common\Classes\AddOnFeeToPayment as DeductibleFeeFromPayment;
+use Homeful\Payment\Traits\HasDeductibleFees;
+use Illuminate\Support\Collection;
+
+// Create a dummy class that uses the HasDeductibleFees trait
+beforeEach(function () {
+    // Create an anonymous class that uses the trait for testing purposes.
+    $this->dummyPayment = new class {
+        use HasDeductibleFees;
+    };
+});
+
+test('it initializes deductible fees collection lazily', function () {
+    $dummy = $this->dummyPayment;
+    // On first access, the collection should be instantiated.
+    expect($dummy->getDeductibleFees())->toBeInstanceOf(Collection::class);
+    expect($dummy->getDeductibleFees()->isEmpty())->toBeTrue();
+});
+
+test('it adds deductible fees correctly', function () {
+    $dummy = $this->dummyPayment;
+    $fee1 = new DeductibleFeeFromPayment('Fee 1', 100, true);
+    $fee2 = new DeductibleFeeFromPayment('Fee 2', 200, true);
+    $dummy->addDeductibleFee($fee1);
+    $dummy->addDeductibleFee($fee2);
+
+    $fees = $dummy->getDeductibleFees();
+    expect($fees->count())->toBe(2);
+});
+
+test('it sums total deductible fees correctly', function () {
+    $dummy = $this->dummyPayment;
+    $fee1 = new DeductibleFeeFromPayment('Fee 1', 100,true);
+    $fee2 = new DeductibleFeeFromPayment('Fee 2', 200, true);
+    $dummy->addDeductibleFee($fee1);
+    $dummy->addDeductibleFee($fee2);
+
+    $total = $dummy->getTotalDeductibleFees();
+    // Assuming the Price object returns the total as 300 (and our test data is in PHP)
+    expect($total->inclusive()->getAmount()->toFloat())->toBe(300.0);
 });
