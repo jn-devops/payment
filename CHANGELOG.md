@@ -2,6 +2,10 @@
 
 All notable changes to `payment` will be documented in this file.
 
+## #v1.3.1 - 2025-02-22
+
+add deductibles to payment
+
 ## #v1.3.0 - 2025-02-15
 
 add add on fees
