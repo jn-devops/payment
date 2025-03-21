@@ -1,76 +1,161 @@
-# Homeful Payment Package
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/jn-devops/payment.svg?style=flat-square)](https://packagist.org/packages/jn-devops/payment)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/jn-devops/payment/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/jn-devops/payment/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/jn-devops/payment/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/jn-devops/payment/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/jn-devops/payment.svg?style=flat-square)](https://packagist.org/packages/jn-devops/payment)
+# 🏦 Payment Package
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+The `Homeful\Payment` package provides a robust and testable abstraction layer for mortgage-related financial computations. It encapsulates the standard PMT and PV formulas using precise monetary operations via the `whitecube/price` and `brick/money` libraries.
 
-## Installation
+---
 
-You can install the package via composer:
+## 📦 Features
 
-```bash
-composer require jn-devops/payment
-```
+- Compute monthly amortization with interest and term (PMT formula)
+- Add-on fee handling (e.g. insurance, extra charges)
+- Deductible fee support (e.g. rebates, adjustments)
+- Compute present value from future payment streams (PV formula)
+- Income requirement estimation based on configurable disposable income percentage
+- Extensive test coverage and simulation datasets
 
-You can publish and run the migrations with:
+---
 
-```bash
-php artisan vendor:publish --tag="payment-migrations"
-php artisan migrate
-```
+## ✅ Installation
 
-You can publish the config file with:
+Ensure you have the following packages:
 
 ```bash
-php artisan vendor:publish --tag="payment-config"
+composer require whitecube/price brick/money jarouche/financial
 ```
 
-This is the contents of the published config file:
+---
+
+## 🧮 Usage
+
+### 📘 Basic PMT Calculation
+
+```php
+use Homeful\Payment\Payment;
+use Homeful\Payment\Class\Term;
+
+$payment = (new Payment)
+    ->setPrincipal(850000.0)
+    ->setTerm(new Term(20)) // 20 years
+    ->setInterestRate(6.25 / 100);
+
+$monthly = $payment->getMonthlyAmortization();
+echo $monthly->format(); // e.g. PHP 6,213.00
+```
+
+### ➕ Add-On Fees (e.g. Fire Insurance, MRI)
+
+```php
+use Homeful\Common\Classes\AddOnFeeToPayment;
+
+$payment->addAddOnFeeToPayment(new AddOnFeeToPayment('fire insurance', 100, false));
+$payment->addAddOnFeeToPayment(new AddOnFeeToPayment('mortgage redemption insurance', 200, false));
+```
+
+### ➖ Deductible Fees (e.g. Promo Deduction)
+
+```php
+use Homeful\Common\Classes\DeductibleFeeFromPayment;
+
+$payment->addDeductibleFee(new DeductibleFeeFromPayment('promo', 125, true));
+```
+
+### 🧾 Income Requirement
+
+```php
+echo $payment->getIncomeRequirement(); // e.g. PHP 20,710.00
+```
+
+---
+
+## 💡 Present Value Calculation
+
+```php
+use Homeful\Payment\PresentValue;
+use Homeful\Payment\Class\Term;
+
+$pv = (new PresentValue)
+    ->setPayment(19978.48)
+    ->setTerm(new Term(20))
+    ->setInterestRate(7 / 100);
+
+echo $pv->getDiscountedValue()->format(); // e.g. PHP 2,576,874.00
+```
+
+---
+
+## 🧪 Testing
+
+Unit and simulation tests available in `/tests/Payment`.
+
+```bash
+php artisan test --filter=Payment
+```
+
+Includes scenarios for:
+
+- Edge case interest validation
+- Max term validations
+- Add-on and deductible modifier interactions
+- Multiple amortization simulations
+
+---
+
+## ⚙️ Configuration
+
+You may configure these via `config/payment.php`:
 
 ```php
 return [
+    'default_percent_disposable_income' => 0.30,
+    'max_years_to_pay' => 30,
+    'max_months_to_pay' => 360,
 ];
 ```
 
-Optionally, you can publish the views using
+---
 
-```bash
-php artisan vendor:publish --tag="payment-views"
-```
+## 📂 Data Transformation
 
-## Usage
+Use `PaymentData::fromObject($payment)` to extract structured values like:
+
+- `principal`
+- `term`, `cycle`
+- `interest_rate`
+- `monthly_amortization`
+- `income_requirement`
+
+---
+
+## 🧩 Traits
+
+- `HasAddOnFees`
+- `HasDeductibleFees`
+- `HasIncomeRequirement`
+
+These ensure modular responsibility and are shared across payment types.
+
+---
+
+## 🤝 Dependencies
+
+- [`brick/money`](https://github.com/brick/money)
+- [`whitecube/price`](https://github.com/whitecube/price)
+- [`jarouche/financial`](https://github.com/jarouche/financial)
+
+---
+
+## ✨ Example Output
 
 ```php
-$payment = new Homeful\Payment();
-echo $payment->echoPhrase('Hello, Homeful!');
+$payment = (new Payment)
+    ->setPrincipal(2900000)
+    ->setTerm(new Term(30))
+    ->setInterestRate(6.75 / 100);
+
+echo $payment->getMonthlyAmortization()->format(); // PHP 18,809.00
 ```
 
-## Testing
+---
 
-```bash
-composer test
-```
-
-## Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-## Security Vulnerabilities
-
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
-
-## Credits
-
-- [Lester B. Hurtado](https://github.com/jn-devops)
-- [All Contributors](../../contributors)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+Behold, a new you awaits — one with precise mortgage computations and a testable financial layer.
